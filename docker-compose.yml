@@ -36,15 +36,18 @@ services:
       - "traefik.http.routers.mongo.tls.certresolver=myresolver"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     restart: always
     ports:
      - "9200:9200"
      - "9300:9300"
     environment:
-      - xpack.security.enabled=false
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=true
     ulimits:
       memlock:
         soft: -1
@@ -52,8 +55,8 @@ services:
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
 
-  elastichq:
-    image: elastichq/elasticsearch-hq
+  elasticvue:
+    image: cars10/elasticvue
     restart: always
     ports:
-     - "5000:5000"
+     - "8080:8080"
